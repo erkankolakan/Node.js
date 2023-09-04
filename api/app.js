@@ -1,3 +1,10 @@
+if(process.env.NODE_ENV != "production")
+  require('dotenv').config()
+
+// productionda değilsen .env dosyasını kullan, productiondaysan kullanma çünkü farklı bir şekilde set edeceğiz.
+// NODE_ENV parametresi express.js in bize sunmuş olduğu bir parametre bu parametre iki tande değer alıyor default olarak devolenment değerindedir birde production değerindedir. Express.Js env değerini okuyarak kendi log seviyesinin debugdamı yoksa infodamı olmasına karar veriyor birde son kullanıcıya hata sayfasının stacğini göstermeyi engelliyor. 
+
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,6 +16,9 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+// console.log("ENV",process.env) // bu bizim işletim sistemimize kayıtlı tüm envimontları görmemizi sağlar ama bizim de kendii değişkenlerimizi tanımlamamız gerekir
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -19,10 +29,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req,res,next) => {
-  console.log("ben app.js de çalışan bir middleware'im")
-  next() //bir soraki işleme geç demek. yani app.use('/' indexRouter) işlemine geçicek oda ztn hemen bunun altında.
-})
+
+//middleware uygulamamız bir istek aldığında bazı aşamalardan geçiyor, ilk önde middleware ye uğruyor daha sonra da routersa uğruyor.
+// app.use((req,res,next) => {
+//   console.log("ben app.js de çalışan bir middleware'im")
+//   next() //bir soraki işleme geç demek. yani app.use('/' indexRouter) işlemine geçicek oda ztn hemen bunun altında.
+// })
 //app ile tanımlanana fonksiyonlar middleware öğelerdir.
 
 app.use('/', indexRouter);
