@@ -11,8 +11,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -27,7 +25,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); 
 
 
 //middleware uygulamamız bir istek aldığında bazı aşamalardan geçiyor, ilk önde middleware ye uğruyor daha sonra da routersa uğruyor.
@@ -37,8 +35,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 // })
 //app ile tanımlanana fonksiyonlar middleware öğelerdir.
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/', require('./routes/index'));   // https://localhost:3000/ bu şekilde bir request geldiği zaman beni indexRouter a gönder. 
+// app.use('/users',require('./routes/users'));   // https://localhost:3000/user bu şekilde bir request geldiği zamanda beni usersRouter a gönder. Bunlarda hemen yukarda tanımlanmış
+// app.use('/auditlogs', require('./routes/auditlogs'));   // https://localhost:3000/auditlogs !! auditlogse gelen istekleri buraya yönlendir demiş olduk. 
+// app.use('/categories', require('./routes/categories'));   // https://localhost:3000/categories !! categories gelen istekleri buraya yönlendir demiş olduk. 
+
+
+// Bunun için app e gidiyoruz ve üsteki gibi tek tek yapmak yerine 
+
+
+
+
+
+app.use((req , res , next) => {
+  console.log("ben app.js de çalışan bir middleware'im")
+  next()
+})
+
+
+app.use('/api', require('./routes/index'));   
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
